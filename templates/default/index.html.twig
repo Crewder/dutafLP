@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dutaf LP{% endblock %}
+
+{% block body %}
+<h1>Liste des articles</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Référence</th>
+            <th>Fournisseur</th>
+            <th>Prix</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{{ article.reference }}</td>
+                <td>{{ article.fournisseur ? article.fournisseur.nom : '-' }}</td>
+                <td>{{ article.prix|number_format(2) }} €</td>
+                <td>
+                    <a href="{{ path('acheter',{id:article.id}) }}" class="btn btn-primary">Acheter</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h1>Liste des fournisseurs</h1>
+    <table class="table fournisseurs">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Téléphone</th>
+            <th>Ville</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: 'http://127.0.0.1:8000/api/fournisseurs',
+                success: function (data) {
+                    for (const element of data['hydra:member']) {
+                        let trElement = '<tr>\n' +
+                            '<td>'+element.nom+'</td>\n' +
+                            '<td>'+element.telephone+'</td>\n' +
+                            '<td>'+element.ville+'</td>\n' +
+                            '</tr>';
+                        $(trElement).appendTo('.fournisseurs tbody');
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}
